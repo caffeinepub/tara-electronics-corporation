@@ -2,7 +2,10 @@ import {
   Award,
   Clock,
   ExternalLink,
+  Mail,
   MapPin,
+  MessageCircle,
+  Phone,
   Quote,
   Star,
   Zap,
@@ -47,7 +50,50 @@ const stats = [
   { value: "1", label: "Unwavering Address" },
 ];
 
+const workingHours = [
+  { day: "Monday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Tuesday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Wednesday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Thursday", status: "Closed", hours: null },
+  { day: "Friday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Saturday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Sunday", status: "Open", hours: "10 AM to 8 PM" },
+];
+
+function StarRating({ rating, total }: { rating: number; total: number }) {
+  return (
+    <div className="flex items-center gap-1.5 mt-0.5">
+      {[1, 2, 3, 4, 5].map((s) => {
+        const filled = s <= Math.floor(rating);
+        const partial = !filled && s === Math.ceil(rating);
+        return (
+          <span key={s} className="relative w-3.5 h-3.5">
+            <Star className="w-3.5 h-3.5 text-gray-200 fill-gray-200 absolute" />
+            {(filled || partial) && (
+              <span
+                className="absolute inset-0 overflow-hidden"
+                style={{ width: partial ? `${(rating % 1) * 100}%` : "100%" }}
+              >
+                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+              </span>
+            )}
+          </span>
+        );
+      })}
+      <span
+        className="text-xs font-bold"
+        style={{ color: "oklch(0.55 0.15 60)" }}
+      >
+        {rating}
+      </span>
+      <span className="text-xs text-muted-foreground">({total}+ reviews)</span>
+    </div>
+  );
+}
+
 export function AboutPage() {
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+
   return (
     <main className="min-h-screen bg-background">
       {/* ── Hero ── */}
@@ -55,7 +101,6 @@ export function AboutPage() {
         className="relative overflow-hidden py-20"
         style={{ background: "oklch(0.13 0.06 255)" }}
       >
-        {/* decorative ring */}
         <div
           className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-10"
           style={{
@@ -158,7 +203,6 @@ export function AboutPage() {
                   i % 2 === 1 ? "lg:[direction:rtl]" : ""
                 }`}
               >
-                {/* Image */}
                 <div
                   className="relative rounded-2xl overflow-hidden shadow-2xl"
                   style={{ direction: "ltr" }}
@@ -179,7 +223,6 @@ export function AboutPage() {
                   </div>
                 </div>
 
-                {/* Text */}
                 <div style={{ direction: "ltr" }}>
                   <div
                     className="flex items-center gap-2 mb-3"
@@ -342,16 +385,9 @@ export function AboutPage() {
                 >
                   Justdial Reviews
                 </div>
-                <div className="flex items-center gap-1 mt-0.5">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
+                <StarRating rating={4.3} total={60} />
                 <div className="text-xs text-muted-foreground mt-0.5">
-                  See all reviews
+                  46 Years in Business
                 </div>
               </div>
               <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -360,10 +396,11 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ── Address & Hours ── */}
+      {/* ── Address, Hours & Contact ── */}
       <section className="py-14" style={{ background: "oklch(0.97 0.01 255)" }}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            {/* Address */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -399,6 +436,60 @@ export function AboutPage() {
               </a>
             </motion.div>
 
+            {/* Contact */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="bg-card rounded-2xl border border-border p-6 shadow-card"
+            >
+              <h3
+                className="font-display font-bold text-base mb-4 flex items-center gap-2"
+                style={{ color: "oklch(0.15 0.05 255)" }}
+              >
+                <Phone
+                  className="w-4 h-4"
+                  style={{ color: "oklch(0.78 0.18 65)" }}
+                />
+                Contact
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <MessageCircle
+                    className="w-4 h-4 flex-shrink-0"
+                    style={{ color: "oklch(0.5 0.18 145)" }}
+                  />
+                  <a
+                    href="https://wa.me/919804211992"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium hover:underline"
+                    style={{ color: "oklch(0.5 0.18 145)" }}
+                  >
+                    +91 98042 11992
+                  </a>
+                </div>
+                <div className="text-xs text-muted-foreground pl-6">
+                  WhatsApp / Call
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <Mail
+                    className="w-4 h-4 flex-shrink-0"
+                    style={{ color: "oklch(0.55 0.18 260)" }}
+                  />
+                  <a
+                    href="mailto:techub.info@gmail.com"
+                    className="text-sm hover:underline break-all"
+                    style={{ color: "oklch(0.55 0.18 260)" }}
+                  >
+                    techub.info@gmail.com
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Working Hours Calendar */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -416,21 +507,56 @@ export function AboutPage() {
                 />
                 Working Hours
               </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    Monday &ndash; Saturday
-                  </span>
-                  <span className="font-semibold">
-                    10:00 AM &ndash; 8:00 PM
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
-                  <span className="font-semibold text-muted-foreground">
-                    Closed
-                  </span>
-                </div>
+              <div className="rounded-xl border border-border overflow-hidden">
+                {workingHours.map(({ day, status, hours }, idx) => {
+                  const isToday = today === day;
+                  const isClosed = status === "Closed";
+                  return (
+                    <div
+                      key={day}
+                      className={`grid grid-cols-3 text-xs px-3 py-2 ${
+                        idx !== workingHours.length - 1
+                          ? "border-b border-border"
+                          : ""
+                      }`}
+                      style={{
+                        background: isToday
+                          ? "oklch(0.22 0.065 255 / 0.07)"
+                          : isClosed
+                            ? "oklch(0.97 0.005 255)"
+                            : "transparent",
+                      }}
+                    >
+                      <span
+                        className={isToday ? "font-bold" : ""}
+                        style={{
+                          color: isToday
+                            ? "oklch(0.22 0.065 255)"
+                            : "oklch(0.3 0.04 255)",
+                        }}
+                      >
+                        {day}
+                        {isToday && " ★"}
+                      </span>
+                      <span
+                        className="text-center font-semibold"
+                        style={{
+                          color: isClosed
+                            ? "oklch(0.5 0.18 25)"
+                            : "oklch(0.45 0.15 145)",
+                        }}
+                      >
+                        {status}
+                      </span>
+                      <span
+                        className="text-right"
+                        style={{ color: "oklch(0.45 0.03 255)" }}
+                      >
+                        {hours ?? "—"}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </motion.div>
           </div>

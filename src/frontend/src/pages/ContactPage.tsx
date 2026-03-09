@@ -2,11 +2,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Clock, Loader2, MapPin, Phone } from "lucide-react";
+import {
+  CheckCircle,
+  Clock,
+  Loader2,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSubmitEnquiry } from "../hooks/useQueries";
+
+const workingHours = [
+  { day: "Monday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Tuesday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Wednesday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Thursday", status: "Closed", hours: null },
+  { day: "Friday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Saturday", status: "Open", hours: "10 AM to 8 PM" },
+  { day: "Sunday", status: "Open", hours: "10 AM to 8 PM" },
+];
 
 export function ContactPage() {
   const [form, setForm] = useState({
@@ -119,6 +137,37 @@ export function ContactPage() {
                     </div>
                   </div>
 
+                  {/* WhatsApp */}
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: "oklch(0.55 0.18 145 / 0.12)" }}
+                    >
+                      <MessageCircle
+                        className="w-5 h-5"
+                        style={{ color: "oklch(0.5 0.18 145)" }}
+                      />
+                    </div>
+                    <div>
+                      <div
+                        className="font-semibold text-sm mb-0.5"
+                        style={{ color: "oklch(0.15 0.05 255)" }}
+                      >
+                        WhatsApp
+                      </div>
+                      <a
+                        href="https://wa.me/919804211992"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium hover:underline"
+                        style={{ color: "oklch(0.5 0.18 145)" }}
+                      >
+                        +91 98042 11992
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Phone */}
                   <div className="flex items-start gap-3">
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -136,12 +185,44 @@ export function ContactPage() {
                       >
                         Phone
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        +91 XXXXX XXXXX
-                      </p>
+                      <a
+                        href="tel:+919804211992"
+                        className="text-sm text-muted-foreground hover:underline"
+                      >
+                        +91 98042 11992
+                      </a>
                     </div>
                   </div>
 
+                  {/* Email */}
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: "oklch(0.6 0.18 260 / 0.1)" }}
+                    >
+                      <Mail
+                        className="w-5 h-5"
+                        style={{ color: "oklch(0.55 0.18 260)" }}
+                      />
+                    </div>
+                    <div>
+                      <div
+                        className="font-semibold text-sm mb-0.5"
+                        style={{ color: "oklch(0.15 0.05 255)" }}
+                      >
+                        Email
+                      </div>
+                      <a
+                        href="mailto:techub.info@gmail.com"
+                        className="text-sm hover:underline"
+                        style={{ color: "oklch(0.55 0.18 260)" }}
+                      >
+                        techub.info@gmail.com
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Working Hours Calendar */}
                   <div className="flex items-start gap-3">
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -152,16 +233,65 @@ export function ContactPage() {
                         style={{ color: "oklch(0.22 0.065 255)" }}
                       />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <div
-                        className="font-semibold text-sm mb-0.5"
+                        className="font-semibold text-sm mb-2"
                         style={{ color: "oklch(0.15 0.05 255)" }}
                       >
                         Working Hours
                       </div>
-                      <div className="text-sm text-muted-foreground space-y-0.5">
-                        <div>Monday – Saturday: 10:00 AM – 8:00 PM</div>
-                        <div>Sunday: Closed</div>
+                      <div className="rounded-xl border border-border overflow-hidden">
+                        {workingHours.map(({ day, status, hours }, idx) => {
+                          const isToday =
+                            new Date().toLocaleDateString("en-US", {
+                              weekday: "long",
+                            }) === day;
+                          const isClosed = status === "Closed";
+                          return (
+                            <div
+                              key={day}
+                              className={`grid grid-cols-3 text-xs px-3 py-2 ${
+                                idx !== workingHours.length - 1
+                                  ? "border-b border-border"
+                                  : ""
+                              } ${isToday ? "font-bold" : ""}`}
+                              style={{
+                                background: isToday
+                                  ? "oklch(0.22 0.065 255 / 0.07)"
+                                  : isClosed
+                                    ? "oklch(0.97 0.005 255)"
+                                    : "transparent",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  color: isToday
+                                    ? "oklch(0.22 0.065 255)"
+                                    : "oklch(0.3 0.04 255)",
+                                }}
+                              >
+                                {day}
+                                {isToday && " ★"}
+                              </span>
+                              <span
+                                className="text-center font-semibold"
+                                style={{
+                                  color: isClosed
+                                    ? "oklch(0.5 0.18 25)"
+                                    : "oklch(0.45 0.15 145)",
+                                }}
+                              >
+                                {status}
+                              </span>
+                              <span
+                                className="text-right"
+                                style={{ color: "oklch(0.45 0.03 255)" }}
+                              >
+                                {hours ?? "—"}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -229,11 +359,31 @@ export function ContactPage() {
               ) : (
                 <div className="bg-card rounded-2xl border border-border p-6 shadow-card">
                   <h2
-                    className="font-display text-xl font-black mb-5"
+                    className="font-display text-xl font-black mb-1"
                     style={{ color: "oklch(0.15 0.05 255)" }}
                   >
                     Send an Enquiry
                   </h2>
+                  <p className="text-xs text-muted-foreground mb-5">
+                    Or reach us directly on{" "}
+                    <a
+                      href="https://wa.me/919804211992"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold hover:underline"
+                      style={{ color: "oklch(0.5 0.18 145)" }}
+                    >
+                      WhatsApp +91 98042 11992
+                    </a>{" "}
+                    or{" "}
+                    <a
+                      href="mailto:techub.info@gmail.com"
+                      className="font-semibold hover:underline"
+                      style={{ color: "oklch(0.55 0.18 260)" }}
+                    >
+                      techub.info@gmail.com
+                    </a>
+                  </p>
                   <form
                     onSubmit={handleSubmit}
                     className="space-y-4"

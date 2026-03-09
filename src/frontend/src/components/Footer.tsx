@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Heart, MapPin, Zap } from "lucide-react";
+import { Clock, Heart, Mail, MapPin, Phone, Zap } from "lucide-react";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -54,10 +54,10 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Address */}
+          {/* Address & Contact */}
           <div>
             <h3 className="font-display font-bold text-white text-base mb-4">
-              Our Location
+              Contact Us
             </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -73,14 +73,40 @@ export function Footer() {
                   743165, India
                 </address>
               </div>
+              <div className="flex items-center gap-3">
+                <Phone
+                  className="w-4 h-4 flex-shrink-0"
+                  style={{ color: "oklch(0.78 0.18 65)" }}
+                />
+                <a
+                  href="https://wa.me/919804211992"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
+                  +91 98042 11992 (WhatsApp)
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail
+                  className="w-4 h-4 flex-shrink-0"
+                  style={{ color: "oklch(0.78 0.18 65)" }}
+                />
+                <a
+                  href="mailto:techub.info@gmail.com"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
+                  techub.info@gmail.com
+                </a>
+              </div>
               <div className="flex items-start gap-3">
                 <Clock
                   className="w-4 h-4 mt-0.5 flex-shrink-0"
                   style={{ color: "oklch(0.78 0.18 65)" }}
                 />
                 <div className="text-sm text-white/70">
-                  <div>Mon – Sat: 10:00 AM – 8:00 PM</div>
-                  <div className="text-white/40">Sunday: Closed</div>
+                  <div>Mon – Wed, Fri – Sun: 10 AM – 8 PM</div>
+                  <div className="text-white/40">Thursday: Closed</div>
                 </div>
               </div>
             </div>
