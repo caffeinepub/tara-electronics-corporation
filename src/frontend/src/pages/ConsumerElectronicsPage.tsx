@@ -1,5 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { useNavigate } from "@tanstack/react-router";
 import {
   AirVent,
@@ -11,6 +18,7 @@ import {
   Home,
   Laptop,
   ShoppingCart,
+  SlidersHorizontal,
   Smartphone,
   Speaker,
   Star,
@@ -19,7 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ProductCategory } from "../backend.d";
 import type { Product } from "../backend.d";
@@ -218,6 +226,16 @@ const FILTER_CATEGORIES: FilterCategory[] = [
   "Appliances",
   "Cameras",
 ];
+
+type SortOption =
+  | "default"
+  | "price_asc"
+  | "price_desc"
+  | "rating_desc"
+  | "name_asc";
+
+const MIN_PRICE = 0;
+const MAX_PRICE = 150000;
 
 // ─── Icon Map ──────────────────────────────────────────────────────────────────
 const IconMap: Record<string, React.ElementType> = {
@@ -480,11 +498,45 @@ const cardVariants = {
 
 export function ConsumerElectronicsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
+  const [sortOption, setSortOption] = useState<SortOption>("default");
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    MIN_PRICE,
+    MAX_PRICE,
+  ]);
 
-  const filteredProducts =
-    activeFilter === "All"
-      ? PRODUCTS
-      : PRODUCTS.filter((p) => p.filterCategory === activeFilter);
+  const filteredProducts = useMemo(() => {
+    let result =
+      activeFilter === "All"
+        ? [...PRODUCTS]
+        : PRODUCTS.filter((p) => p.filterCategory === activeFilter);
+
+    // Price filter
+    result = result.filter(
+      (p) =>
+        Number(p.priceInInr) >= priceRange[0] &&
+        Number(p.priceInInr) <= priceRange[1],
+    );
+
+    // Sort
+    switch (sortOption) {
+      case "price_asc":
+        result.sort((a, b) => Number(a.priceInInr) - Number(b.priceInInr));
+        break;
+      case "price_desc":
+        result.sort((a, b) => Number(b.priceInInr) - Number(a.priceInInr));
+        break;
+      case "rating_desc":
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case "name_asc":
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  }, [activeFilter, priceRange, sortOption]);
 
   return (
     <main>
@@ -572,34 +624,159 @@ export function ConsumerElectronicsPage() {
       {/* ── Filter Pills + Product Grid ── */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-2 mb-10">
-            {FILTER_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                data-ocid="electronics.filter.tab"
-                onClick={() => setActiveFilter(cat)}
-                className="px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 border"
-                style={
-                  activeFilter === cat
-                    ? {
-                        background: "oklch(0.22 0.065 255)",
-                        color: "white",
-                        borderColor: "oklch(0.22 0.065 255)",
-                        boxShadow:
-                          "0 4px 12px -4px oklch(0.22 0.065 255 / 0.4)",
-                      }
-                    : {
-                        background: "transparent",
-                        color: "oklch(0.5 0.03 255)",
-                        borderColor: "oklch(0.85 0.015 85)",
-                      }
-                }
-              >
-                {cat}
-              </button>
-            ))}
+          {/* ── Toolbar: Category + Price + Sort ── */}
+          <div className="flex flex-col gap-5 mb-10">
+            {/* Category Pills */}
+            <div className="flex flex-wrap gap-2">
+              {FILTER_CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  data-ocid="electronics.filter.tab"
+                  onClick={() => setActiveFilter(cat)}
+                  className="px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 border"
+                  style={
+                    activeFilter === cat
+                      ? {
+                          background: "oklch(0.22 0.065 255)",
+                          color: "white",
+                          borderColor: "oklch(0.22 0.065 255)",
+                          boxShadow:
+                            "0 4px 12px -4px oklch(0.22 0.065 255 / 0.4)",
+                        }
+                      : {
+                          background: "transparent",
+                          color: "oklch(0.5 0.03 255)",
+                          borderColor: "oklch(0.85 0.015 85)",
+                        }
+                  }
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Price Filter + Sort Row */}
+            <div
+              className="flex flex-col sm:flex-row gap-5 items-start sm:items-center p-4 rounded-2xl border"
+              style={{
+                background: "oklch(0.97 0.005 255)",
+                borderColor: "oklch(0.88 0.015 85)",
+              }}
+            >
+              {/* Price Range */}
+              <div className="flex-1 min-w-[220px]">
+                <div className="flex items-center gap-2 mb-3">
+                  <SlidersHorizontal
+                    className="w-4 h-4"
+                    style={{ color: "oklch(0.45 0.08 255)" }}
+                  />
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: "oklch(0.3 0.06 255)" }}
+                  >
+                    Price Range
+                  </span>
+                  <span
+                    className="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-full"
+                    style={{
+                      background: "oklch(0.22 0.065 255 / 0.1)",
+                      color: "oklch(0.22 0.065 255)",
+                    }}
+                  >
+                    ₹{priceRange[0].toLocaleString("en-IN")} — ₹
+                    {priceRange[1].toLocaleString("en-IN")}
+                  </span>
+                </div>
+                <Slider
+                  data-ocid="electronics.price_range.slider"
+                  min={MIN_PRICE}
+                  max={MAX_PRICE}
+                  step={500}
+                  value={priceRange}
+                  onValueChange={(val) =>
+                    setPriceRange([val[0], val[1]] as [number, number])
+                  }
+                  className="w-full"
+                />
+                <div
+                  className="flex justify-between text-xs mt-1.5"
+                  style={{ color: "oklch(0.6 0.03 255)" }}
+                >
+                  <span>₹0</span>
+                  <span>₹1,50,000</span>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div
+                className="hidden sm:block w-px self-stretch"
+                style={{ background: "oklch(0.88 0.015 85)" }}
+              />
+
+              {/* Sort */}
+              <div className="flex items-center gap-3 shrink-0">
+                <span
+                  className="text-sm font-semibold whitespace-nowrap"
+                  style={{ color: "oklch(0.3 0.06 255)" }}
+                >
+                  Sort by
+                </span>
+                <Select
+                  value={sortOption}
+                  onValueChange={(v) => setSortOption(v as SortOption)}
+                >
+                  <SelectTrigger
+                    data-ocid="electronics.sort.select"
+                    className="w-[190px] rounded-xl border font-medium text-sm"
+                    style={{
+                      borderColor: "oklch(0.85 0.015 85)",
+                      background: "white",
+                      color: "oklch(0.22 0.065 255)",
+                    }}
+                  >
+                    <SelectValue placeholder="Default" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="price_asc">
+                      Price: Low to High
+                    </SelectItem>
+                    <SelectItem value="price_desc">
+                      Price: High to Low
+                    </SelectItem>
+                    <SelectItem value="rating_desc">Top Rated</SelectItem>
+                    <SelectItem value="name_asc">Name: A-Z</SelectItem>
+                  </SelectContent>
+                </Select>
+                {/* Reset button */}
+                {(sortOption !== "default" ||
+                  priceRange[0] !== MIN_PRICE ||
+                  priceRange[1] !== MAX_PRICE) && (
+                  <button
+                    type="button"
+                    data-ocid="electronics.reset_filters.button"
+                    onClick={() => {
+                      setSortOption("default");
+                      setPriceRange([MIN_PRICE, MAX_PRICE]);
+                    }}
+                    className="text-xs font-semibold underline underline-offset-2 transition-opacity hover:opacity-70"
+                    style={{ color: "oklch(0.45 0.15 25)" }}
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Result count */}
+            <p className="text-sm" style={{ color: "oklch(0.55 0.03 255)" }}>
+              Showing{" "}
+              <strong style={{ color: "oklch(0.22 0.065 255)" }}>
+                {filteredProducts.length}
+              </strong>{" "}
+              of {PRODUCTS.length} products
+            </p>
           </div>
 
           {/* Grid */}

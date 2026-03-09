@@ -8,15 +8,12 @@ import { useCart } from "../context/CartContext";
 
 type NavLink =
   | { label: string; to: "/"; params?: undefined; ocid: string }
-  | {
-      label: string;
-      to: "/category/$categoryId";
-      params: { categoryId: string };
-      ocid: string;
-    }
   | { label: string; to: "/about"; params?: undefined; ocid: string }
   | { label: string; to: "/contact"; params?: undefined; ocid: string }
-  | { label: string; to: "/electronics"; params?: undefined; ocid: string };
+  | { label: string; to: "/electronics"; params?: undefined; ocid: string }
+  | { label: string; to: "/laser-engraving"; params?: undefined; ocid: string }
+  | { label: string; to: "/3d-printing"; params?: undefined; ocid: string }
+  | { label: string; to: "/customisation"; params?: undefined; ocid: string };
 
 const navLinks: NavLink[] = [
   { label: "Home", to: "/", ocid: "nav.home_link" },
@@ -27,20 +24,17 @@ const navLinks: NavLink[] = [
   },
   {
     label: "Laser Engraving",
-    to: "/category/$categoryId",
-    params: { categoryId: "laserEngraving" },
+    to: "/laser-engraving",
     ocid: "nav.laser_engraving_link",
   },
   {
     label: "3D Printing",
-    to: "/category/$categoryId",
-    params: { categoryId: "threeDPrinting" },
+    to: "/3d-printing",
     ocid: "nav.3d_printing_link",
   },
   {
     label: "Customisation",
-    to: "/category/$categoryId",
-    params: { categoryId: "customisation" },
+    to: "/customisation",
     ocid: "nav.customisation_link",
   },
   { label: "About", to: "/about", ocid: "nav.about_link" },
@@ -87,46 +81,22 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => {
               const currentPath = location.pathname;
-              let isActive = false;
-              if (link.to === "/") {
-                isActive = currentPath === "/";
-              } else if (link.to === "/category/$categoryId" && link.params) {
-                isActive =
-                  currentPath === `/category/${link.params.categoryId}`;
-              } else {
-                isActive = currentPath === link.to;
-              }
-
-              if (link.to === "/category/$categoryId" && link.params) {
-                return (
-                  <Link
-                    key={link.ocid}
-                    to={link.to}
-                    params={link.params}
-                    data-ocid={link.ocid}
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "text-white"
-                        : "text-white/70 hover:text-white hover:bg-white/10"
-                    }`}
-                    style={
-                      isActive
-                        ? {
-                            background: "oklch(0.78 0.18 65 / 0.2)",
-                            color: "oklch(0.88 0.14 75)",
-                          }
-                        : {}
-                    }
-                  >
-                    {link.label}
-                  </Link>
-                );
-              }
+              const isActive =
+                link.to === "/" ? currentPath === "/" : currentPath === link.to;
 
               return (
                 <Link
                   key={link.ocid}
-                  to={link.to as "/" | "/about" | "/contact" | "/electronics"}
+                  to={
+                    link.to as
+                      | "/"
+                      | "/about"
+                      | "/contact"
+                      | "/electronics"
+                      | "/laser-engraving"
+                      | "/3d-printing"
+                      | "/customisation"
+                  }
                   data-ocid={link.ocid}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
                     isActive
@@ -199,33 +169,26 @@ export function Navbar() {
             style={{ background: "oklch(0.15 0.05 255)" }}
           >
             <nav className="container mx-auto px-4 py-3 flex flex-col gap-1">
-              {navLinks.map((link) => {
-                if (link.to === "/category/$categoryId" && link.params) {
-                  return (
-                    <Link
-                      key={link.ocid}
-                      to={link.to}
-                      params={link.params}
-                      data-ocid={link.ocid}
-                      className="px-4 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                }
-                return (
-                  <Link
-                    key={link.ocid}
-                    to={link.to as "/" | "/about" | "/contact" | "/electronics"}
-                    data-ocid={link.ocid}
-                    className="px-4 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.ocid}
+                  to={
+                    link.to as
+                      | "/"
+                      | "/about"
+                      | "/contact"
+                      | "/electronics"
+                      | "/laser-engraving"
+                      | "/3d-printing"
+                      | "/customisation"
+                  }
+                  data-ocid={link.ocid}
+                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </motion.div>
         )}

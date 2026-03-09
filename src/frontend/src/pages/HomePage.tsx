@@ -191,13 +191,13 @@ export function HomePage() {
                   to={
                     cat.id === "consumerElectronics"
                       ? "/electronics"
-                      : "/category/$categoryId"
+                      : cat.id === "laserEngraving"
+                        ? "/laser-engraving"
+                        : cat.id === "threeDPrinting"
+                          ? "/3d-printing"
+                          : "/customisation"
                   }
-                  params={
-                    cat.id === "consumerElectronics"
-                      ? undefined
-                      : { categoryId: cat.id }
-                  }
+                  params={undefined}
                   className="group block"
                 >
                   <div className="rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 bg-card border border-border">

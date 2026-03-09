@@ -17,8 +17,11 @@ import { CartPage } from "./pages/CartPage";
 import { CategoryPage } from "./pages/CategoryPage";
 import { ConsumerElectronicsPage } from "./pages/ConsumerElectronicsPage";
 import { ContactPage } from "./pages/ContactPage";
+import { CustomisationPage } from "./pages/CustomisationPage";
 import { HomePage } from "./pages/HomePage";
+import { LaserEngravingPage } from "./pages/LaserEngravingPage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
+import { ThreeDPrintingPage } from "./pages/ThreeDPrintingPage";
 
 function RootLayout() {
   const { actor } = useActor();
@@ -98,6 +101,24 @@ const electronicsRoute = createRoute({
   component: ConsumerElectronicsPage,
 });
 
+const laserEngravingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/laser-engraving",
+  component: LaserEngravingPage,
+});
+
+const threeDPrintingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/3d-printing",
+  component: ThreeDPrintingPage,
+});
+
+const customisationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/customisation",
+  component: CustomisationPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
@@ -107,6 +128,9 @@ const routeTree = rootRoute.addChildren([
   contactRoute,
   adminRoute,
   electronicsRoute,
+  laserEngravingRoute,
+  threeDPrintingRoute,
+  customisationRoute,
 ]);
 
 const router = createRouter({ routeTree });
