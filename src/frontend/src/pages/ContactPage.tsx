@@ -64,6 +64,21 @@ export function ContactPage() {
         email: form.email.trim(),
         message: form.message.trim(),
       });
+      // Open email client so Tara Electronics receives the enquiry directly
+      const name = form.name.trim();
+      const phone = form.phone.trim();
+      const customerEmail = form.email.trim();
+      const message = form.message.trim();
+      const subject = encodeURIComponent(
+        `New Enquiry from ${name} - Tara Electronics Corporation`,
+      );
+      const body = encodeURIComponent(
+        `You have received a new enquiry from your website.\n\nName   : ${name}\nPhone  : ${phone}\nEmail  : ${customerEmail}\n\nMessage:\n${message}`,
+      );
+      window.open(
+        `mailto:techub.info@gmail.com?subject=${subject}&body=${body}`,
+        "_blank",
+      );
       setSubmitted(true);
       toast.success("Enquiry submitted! We'll get back to you soon.");
     } catch {
@@ -130,7 +145,7 @@ export function ContactPage() {
                       <address className="not-italic text-sm text-muted-foreground leading-relaxed">
                         73/1, R.B.C Road
                         <br />
-                        Naihati, West Bengal – 743165
+                        Naihati, West Bengal - 743165
                         <br />
                         India
                       </address>
@@ -298,20 +313,18 @@ export function ContactPage() {
                 </div>
               </div>
 
-              {/* Map Placeholder */}
-              <div
-                className="rounded-2xl overflow-hidden border border-border h-52 flex items-center justify-center"
-                style={{ background: "oklch(0.94 0.01 255)" }}
-              >
-                <div className="text-center">
-                  <MapPin className="w-10 h-10 mx-auto mb-2 text-muted-foreground/40" />
-                  <p className="text-sm text-muted-foreground">
-                    Naihati, West Bengal
-                  </p>
-                  <p className="text-xs text-muted-foreground/60 mt-0.5">
-                    73/1, R.B.C Road
-                  </p>
-                </div>
+              {/* Google Map */}
+              <div className="rounded-2xl overflow-hidden border border-border h-52">
+                <iframe
+                  title="Tara Electronics Corporation Location"
+                  src="https://maps.google.com/maps?q=Tara+Electronics+Corporation+73+RBC+Road+Naihati+West+Bengal+743165&z=16&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </motion.div>
 

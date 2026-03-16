@@ -425,7 +425,7 @@ export function AboutPage() {
                 India
               </address>
               <a
-                href="https://www.google.com/maps/search/Tara+Electronics+Corporation+Naihati"
+                href="https://www.google.com/maps/search/Tara+Electronics+Corporation+73+RBC+Road+Naihati+West+Bengal+743165"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-ocid="about.directions.button"
