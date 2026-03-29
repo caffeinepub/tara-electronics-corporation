@@ -313,11 +313,11 @@ export function ContactPage() {
                 </div>
               </div>
 
-              {/* Google Map */}
+              {/* Google Map with exact coordinates */}
               <div className="rounded-2xl overflow-hidden border border-border h-52">
                 <iframe
                   title="Tara Electronics Corporation Location"
-                  src="https://maps.google.com/maps?q=Tara+Electronics+Corporation+73+RBC+Road+Naihati+West+Bengal+743165&z=16&output=embed"
+                  src="https://maps.google.com/maps?q=22.8843577,88.4152776&z=17&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

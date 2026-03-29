@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bricolage Grotesque - Display */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2")
+    format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Cabinet Grotesk - Display Headings */
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/assets/fonts/CabinetGrotesk-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Satoshi - Body */
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* Deep Navy + Warm Amber palette */
+    --background: 0.98 0.005 85;
+    --foreground: 0.15 0.025 255;
+
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.025 255;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.025 255;
+
+    /* Deep navy primary */
+    --primary: 0.22 0.065 255;
+    --primary-foreground: 0.98 0 0;
+
+    /* Light warm gray secondary */
+    --secondary: 0.94 0.008 85;
+    --secondary-foreground: 0.22 0.065 255;
+
+    /* Muted warm gray */
+    --muted: 0.94 0.008 85;
+    --muted-foreground: 0.5 0.02 255;
+
+    /* Amber gold accent */
+    --accent: 0.78 0.18 65;
+    --accent-foreground: 0.12 0.04 255;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 0.88 0.012 85;
+    --input: 0.9 0.01 85;
+    --ring: 0.22 0.065 255;
+
+    --chart-1: 0.646 0.222 41.116;
+    --chart-2: 0.6 0.118 184.704;
+    --chart-3: 0.398 0.07 227.392;
+    --chart-4: 0.828 0.189 84.429;
+    --chart-5: 0.769 0.188 70.08;
+
+    --sidebar: 0.985 0 0;
+    --sidebar-foreground: 0.145 0 0;
+    --sidebar-primary: 0.205 0 0;
+    --sidebar-primary-foreground: 0.985 0 0;
+    --sidebar-accent: 0.97 0 0;
+    --sidebar-accent-foreground: 0.205 0 0;
+    --sidebar-border: 0.922 0 0;
+    --sidebar-ring: 0.708 0 0;
+
+    /* Custom brand tokens */
+    --navy: 0.22 0.065 255;
+    --navy-deep: 0.15 0.05 255;
+    --navy-light: 0.3 0.07 255;
+    --gold: 0.78 0.18 65;
+    --gold-light: 0.88 0.14 75;
+    --gold-dark: 0.62 0.2 55;
+    --warm-gray: 0.94 0.008 85;
+    --warm-gray-dark: 0.85 0.012 85;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Satoshi", "Cabinet Grotesk", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Cabinet Grotesk", "Bricolage Grotesque", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .brand-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.15 0.05 255) 0%,
+      oklch(0.22 0.065 255) 50%,
+      oklch(0.18 0.06 240) 100%
+    );
+  }
+
+  .gold-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.62 0.2 55) 0%,
+      oklch(0.78 0.18 65) 50%,
+      oklch(0.88 0.14 75) 100%
+    );
+  }
+
+  .text-gold {
+    color: oklch(var(--gold));
+  }
+
+  .text-navy {
+    color: oklch(var(--navy));
+  }
+
+  .bg-navy {
+    background-color: oklch(var(--navy));
+  }
+
+  .bg-navy-deep {
+    background-color: oklch(var(--navy-deep));
+  }
+
+  .bg-gold {
+    background-color: oklch(var(--gold));
+  }
+
+  .border-gold {
+    border-color: oklch(var(--gold));
+  }
+
+  .shadow-navy {
+    box-shadow: 0 4px 24px -4px oklch(var(--navy) / 0.25);
+  }
+
+  .shadow-gold {
+    box-shadow: 0 4px 20px -4px oklch(var(--gold) / 0.4);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+}

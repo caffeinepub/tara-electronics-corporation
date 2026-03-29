@@ -301,7 +301,7 @@ export function AboutPage() {
           <div className="flex flex-col sm:flex-row gap-5 justify-center items-center max-w-xl mx-auto">
             {/* Google Reviews */}
             <motion.a
-              href="https://www.google.com/search?q=Tara+Electronics+Corporation+Naihati+reviews"
+              href="https://www.google.com/maps/place/Tara+Electronics+Corporation/@22.8843577,88.4152776,17z"
               target="_blank"
               rel="noopener noreferrer"
               data-ocid="about.google_review.button"
@@ -425,7 +425,7 @@ export function AboutPage() {
                 India
               </address>
               <a
-                href="https://www.google.com/maps/search/Tara+Electronics+Corporation+73+RBC+Road+Naihati+West+Bengal+743165"
+                href="https://www.google.com/maps/place/Tara+Electronics+Corporation/@22.8843577,88.4152776,17z"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-ocid="about.directions.button"

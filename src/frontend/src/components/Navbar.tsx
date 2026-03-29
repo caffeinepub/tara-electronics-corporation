@@ -1,10 +1,20 @@
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useInternetIdentity } from "@/hooks/useInternetIdentity";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Menu, ShoppingCart, X, Zap } from "lucide-react";
+import { LogIn, LogOut, Menu, ShoppingCart, User, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useActor } from "../hooks/useActor";
 
 type NavLink =
   | { label: string; to: "/"; params?: undefined; ocid: string }
@@ -45,6 +55,32 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { cartCount } = useCart();
   const location = useLocation();
+  const { identity, login, clear, isLoggingIn } = useInternetIdentity();
+  const { actor } = useActor();
+  const isLoggedIn = !!identity && !identity.getPrincipal().isAnonymous();
+  const [profileName, setProfileName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoggedIn || !actor) {
+      setProfileName(null);
+      return;
+    }
+    actor
+      .getCallerUserProfile()
+      .then((profile) => {
+        if (profile?.name) setProfileName(profile.name);
+      })
+      .catch(() => {});
+  }, [isLoggedIn, actor]);
+
+  const initials = profileName
+    ? profileName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "TC";
 
   return (
     <header
@@ -55,15 +91,11 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center"
-              style={{ background: "oklch(0.78 0.18 65)" }}
-            >
-              <Zap
-                className="w-5 h-5"
-                style={{ color: "oklch(0.15 0.05 255)" }}
-              />
-            </div>
+            <img
+              src="/assets/uploads/TECHUB-CIRCLE-LOGO-1.png"
+              alt="TEC Hub Logo"
+              className="w-10 h-10 rounded-full object-cover"
+            />
             <div className="leading-tight">
               <div className="font-display font-black text-white text-sm tracking-tight">
                 TARA ELECTRONICS
@@ -118,8 +150,82 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Cart + Mobile Menu */}
-          <div className="flex items-center gap-3">
+          {/* Auth + Cart + Mobile Menu */}
+          <div className="flex items-center gap-2">
+            {/* Auth Button (Desktop) */}
+            {!isLoggedIn ? (
+              <Button
+                data-ocid="nav.login_button"
+                size="sm"
+                className="hidden sm:flex items-center gap-1.5 font-semibold text-sm rounded-lg h-9 px-4 transition-all hover:scale-[1.03]"
+                style={{
+                  background: "oklch(0.78 0.18 65)",
+                  color: "oklch(0.12 0.04 255)",
+                }}
+                onClick={login}
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? (
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <LogIn className="w-3.5 h-3.5" />
+                )}
+                {isLoggingIn ? "Signing in..." : "Login"}
+              </Button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    data-ocid="nav.account_button"
+                    variant="ghost"
+                    className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-lg hover:bg-white/10"
+                  >
+                    <Avatar className="w-7 h-7">
+                      <AvatarFallback
+                        className="text-xs font-bold"
+                        style={{
+                          background: "oklch(0.78 0.18 65 / 0.2)",
+                          color: "oklch(0.88 0.14 75)",
+                        }}
+                      >
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-white/90 max-w-[80px] truncate">
+                      {profileName || "Account"}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48 border-white/10"
+                  style={{ background: "oklch(0.18 0.06 255)" }}
+                >
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/account"
+                      data-ocid="nav.account_link"
+                      className="flex items-center gap-2 text-white/80 hover:text-white cursor-pointer"
+                    >
+                      <User className="w-4 h-4" />
+                      My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem
+                    data-ocid="nav.signout_button"
+                    className="flex items-center gap-2 cursor-pointer"
+                    style={{ color: "oklch(0.65 0.18 20)" }}
+                    onClick={clear}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            {/* Cart */}
             <Link to="/cart" data-ocid="nav.cart_button">
               <Button
                 variant="outline"
@@ -141,6 +247,7 @@ export function Navbar() {
               </Button>
             </Link>
 
+            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="icon"
@@ -189,6 +296,50 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <div
+                className="h-px my-1"
+                style={{ background: "oklch(0.25 0.04 255)" }}
+              />
+              {!isLoggedIn ? (
+                <button
+                  type="button"
+                  data-ocid="nav.mobile_login_button"
+                  className="px-4 py-2.5 rounded-lg text-sm font-semibold text-left flex items-center gap-2 transition-colors"
+                  style={{ color: "oklch(0.88 0.14 75)" }}
+                  onClick={() => {
+                    login();
+                    setMobileOpen(false);
+                  }}
+                >
+                  <LogIn className="w-4 h-4" />
+                  Login / Register
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/account"
+                    data-ocid="nav.mobile_account_link"
+                    className="px-4 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors flex items-center gap-2"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <User className="w-4 h-4" />
+                    My Account
+                  </Link>
+                  <button
+                    type="button"
+                    data-ocid="nav.mobile_signout_button"
+                    className="px-4 py-2.5 rounded-lg text-sm font-medium text-left flex items-center gap-2 transition-colors hover:bg-white/10"
+                    style={{ color: "oklch(0.65 0.18 20)" }}
+                    onClick={() => {
+                      clear();
+                      setMobileOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </>
+              )}
             </nav>
           </motion.div>
         )}

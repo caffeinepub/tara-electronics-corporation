@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Heart, Mail, MapPin, Phone, Zap } from "lucide-react";
+import { Clock, Heart, Mail, MapPin, Phone } from "lucide-react";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -17,15 +17,11 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ background: "oklch(0.78 0.18 65)" }}
-              >
-                <Zap
-                  className="w-5 h-5"
-                  style={{ color: "oklch(0.15 0.05 255)" }}
-                />
-              </div>
+              <img
+                src="/assets/uploads/TECHUB-CIRCLE-LOGO-1.png"
+                alt="TEC Hub Logo"
+                className="w-10 h-10 rounded-full object-cover"
+              />
               <div>
                 <div className="font-display font-black text-white text-base tracking-tight">
                   TARA ELECTRONICS

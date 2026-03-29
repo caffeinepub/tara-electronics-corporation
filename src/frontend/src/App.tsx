@@ -12,6 +12,7 @@ import { Navbar } from "./components/Navbar";
 import { CartProvider } from "./context/CartContext";
 import { useActor } from "./hooks/useActor";
 import { AboutPage } from "./pages/AboutPage";
+import { AccountPage } from "./pages/AccountPage";
 import { AdminPage } from "./pages/AdminPage";
 import { CartPage } from "./pages/CartPage";
 import { CategoryPage } from "./pages/CategoryPage";
@@ -119,6 +120,12 @@ const customisationRoute = createRoute({
   component: CustomisationPage,
 });
 
+const accountRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/account",
+  component: AccountPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
@@ -131,6 +138,7 @@ const routeTree = rootRoute.addChildren([
   laserEngravingRoute,
   threeDPrintingRoute,
   customisationRoute,
+  accountRoute,
 ]);
 
 const router = createRouter({ routeTree });
